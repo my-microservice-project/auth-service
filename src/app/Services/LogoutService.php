@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\CacheEnum;
 use App\Exceptions\UserCanNotLogoutException;
+use BugraBozkurt\InterServiceCommunication\Exceptions\UnauthorizedException;
 use BugraBozkurt\InterServiceCommunication\Helpers\AuthHelper;
 use Illuminate\Support\Facades\Cache;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -23,8 +24,8 @@ class LogoutService
                 return false;
             }
 
+            Cache::forget($this->getCacheKey());
             $this->setTokenToBlacklist($token);
-            $this->forgetCacheKey($this->getCacheKey());
 
             return true;
         } catch (\Exception $e) {
@@ -37,6 +38,9 @@ class LogoutService
         return JWTAuth::getToken();
     }
 
+    /**
+     * @throws UnauthorizedException
+     */
     private function getCacheKey(): string
     {
         return CacheEnum::JWT->getValue() . AuthHelper::customerId();
@@ -45,11 +49,6 @@ class LogoutService
     private function setTokenToBlacklist(string $token): void
     {
         Cache::set(CacheEnum::BLACK_LIST->getValue().$token, true, CacheEnum::BLACK_LIST->getTTL());
-    }
-
-    private function forgetCacheKey(string $cacheKey): void
-    {
-        Cache::forget($cacheKey);
     }
 
 }
