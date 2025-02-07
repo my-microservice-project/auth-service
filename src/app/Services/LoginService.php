@@ -10,22 +10,36 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class LoginService
 {
+
     public function generateToken(UserData $user): string
     {
-        $cacheKey = CacheEnum::JWT->getValue() . $user->id;
+        $cacheKey = $this->buildCacheKey($user->id);
         $cachedToken = Cache::get($cacheKey);
 
-        if ($cachedToken && is_string($cachedToken) && !$this->isTokenExpired($cachedToken)) {
+        if ($this->isValidCachedToken($cachedToken)) {
             return $cachedToken;
         }
 
-        $jwtUser = new JWTUser($user->id);
-        $token = JWTAuth::fromUser($jwtUser);
+        $token = $this->createTokenForUser($user);
 
-        Cache::put($cacheKey, (string) $token, CacheEnum::JWT->getTtl());
+        Cache::put($cacheKey, $token, CacheEnum::JWT->getTTL());
 
         return $token;
     }
+
+
+    private function isValidCachedToken($token): bool
+    {
+        return is_string($token) && !$this->isTokenExpired($token);
+    }
+
+
+    private function createTokenForUser(UserData $user): string
+    {
+        $jwtUser = new JWTUser($user->id);
+        return JWTAuth::fromUser($jwtUser);
+    }
+
 
     private function isTokenExpired(string $token): bool
     {
@@ -35,5 +49,10 @@ class LoginService
         } catch (\Exception $e) {
             return true;
         }
+    }
+
+    private function buildCacheKey(int $userId): string
+    {
+        return CacheEnum::JWT->getValue() . $userId;
     }
 }

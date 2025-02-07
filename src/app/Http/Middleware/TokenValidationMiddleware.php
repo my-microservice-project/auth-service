@@ -3,10 +3,10 @@
 namespace App\Http\Middleware;
 
 use App\Exceptions\UserCanNotLogoutException;
+use App\Exceptions\UserNotFoundException;
 use App\Traits\ResponseTrait;
 use BugraBozkurt\InterServiceCommunication\Helpers\AuthHelper;
 use Closure;
-use Symfony\Component\HttpFoundation\Response;
 
 class TokenValidationMiddleware
 {
@@ -19,7 +19,7 @@ class TokenValidationMiddleware
     {
         try {
             if(!AuthHelper::customerId()){
-                return $this->errorResponse('Unauthorized', [],Response::HTTP_UNAUTHORIZED);
+                throw new UserNotFoundException();
             }
         } catch (\Exception $e) {
             throw new UserCanNotLogoutException();

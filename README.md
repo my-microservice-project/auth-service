@@ -1,6 +1,6 @@
 # Auth Service
 
-Bu servis, kullanıcı kimlik doğrulama işlemlerini yönetmek için tasarlanmış bir mikroservistir.
+Bu servis, kullanıcı kimlik doğrulama işlemlerini yönetmek için cache based tasarlanmış bir mikroservistir.
 
 ## 🚀 Başlangıç
 
@@ -8,6 +8,7 @@ Bu servis, kullanıcı kimlik doğrulama işlemlerini yönetmek için tasarlanm�
 
 - Docker
 - Docker Compose
+- Redis
 
 ### Kurulum
 
@@ -26,75 +27,30 @@ cd auth-service
 cp .env.example .env
 ```
 
-4. Docker konteynerlerini başlatın
+4. Kaynak kod dizinine gidin
 ```bash
-docker-compose up -d
+cd src/
 ```
 
-## 🛠 Servisler
+5. .env dosyasını oluşturun
+```bash
+cp .env.example .env
+```
 
-Proje aşağıdaki servisleri içermektedir:
+6. Ana dizinine gidin ve Docker Compose ile servisi başlatın
+```bash
+cd .. && docker-compose up -d
+```
 
-1. **Webserver (Nginx)**
-   - Port: .env dosyasında belirtilen WEBSERVICE_PORT
-   - Alpine tabanlı hafif Nginx sunucusu
-
-2. **PHP-FPM**
-   - PHP 8.3 versiyonu
-   - Özelleştirilmiş PHP yapılandırması
-
-## 🔑 API Endpointleri
-
-### V1 API
-
-#### Giriş İşlemleri
-- **POST** `/api/v1/login`
-  - Kullanıcı girişi için kullanılır
-  - İstek gövdesi:
-    ```json
-    {
-        "email": "string",
-        "password": "string"
-    }
-    ```
-  - Başarılı yanıt:
-    ```json
-    {
-        "status": true,
-        "message": "Giriş başarılı",
-        "data": {
-            "token": "jwt_token"
-        }
-    }
-    ```
-
-#### Çıkış İşlemleri
-- **POST** `/api/v1/logout`
-  - Kullanıcı çıkışı için kullanılır
-  - Header'da Bearer token gereklidir
-  - Başarılı yanıt:
-    ```json
-    {
-        "status": true,
-        "message": "Çıkış başarılı"
-    }
-    ```
-
-## 🔒 Güvenlik
-
-- JWT (JSON Web Token) tabanlı kimlik doğrulama
-- Bearer token authentication
-- Rate limiting koruması
-
-## 🛡 Hata Kodları
-
-- `401`: Yetkisiz erişim
-- `422`: Validasyon hatası
-- `429`: Çok fazla istek
-- `500`: Sunucu hatası
+7. Container içerisine girin
+```bash
+docker exec -it phpserver_auth_service
+```
+8. Composer ile bağımlılıkları yükleyin
+```bash
+composer install
+```
 
 ## 📝 Notlar
 
-- Servis, mikroservis mimarisi için tasarlanmıştır
-- RESTful API prensiplerini takip eder
-- Tüm yanıtlar JSON formatındadır
+- Swagger dökümantasyonu için [http://localhost:8081/api/documentation](http://localhost:8081/api/documentation) adresini ziyaret edebilirsiniz.

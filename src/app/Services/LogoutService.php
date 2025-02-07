@@ -18,14 +18,13 @@ class LogoutService
     {
         try {
             $token = $this->getUserToken();
-            
+
             if (!$token) {
                 return false;
             }
 
-            $cacheKey = $this->getCacheKey();
             $this->setTokenToBlacklist($token);
-            $this->forgetCacheKey($cacheKey);
+            $this->forgetCacheKey($this->getCacheKey());
 
             return true;
         } catch (\Exception $e) {

@@ -26,7 +26,6 @@ class AuthHttpRequests
     {
         try {
             $response = User::post('api/v1/logout');
-
             return $response->successful();
         } catch (\Exception $e) {
             return false;
