@@ -34,12 +34,12 @@
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "user@example.com"
+                                        "example": "turker.jonturk@example.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "secret123"
+                                        "example": "123456789"
                                     }
                                 },
                                 "type": "object"

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Exceptions\UserCanNotVerifiedException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\LoginResource;
@@ -18,6 +19,9 @@ class LoginController extends Controller
         protected LoginManager $loginManager
     ) {}
 
+    /**
+     * @throws UserCanNotVerifiedException
+     */
     #[OA\Post(
         path: '/api/v1/login',
         description: 'Authenticates a user and returns a JWT token',
@@ -31,13 +35,13 @@ class LoginController extends Controller
                         property: 'email',
                         type: 'string',
                         format: 'email',
-                        example: 'user@example.com'
+                        example: 'turker.jonturk@example.com'
                     ),
                     new OA\Property(
                         property: 'password',
                         type: 'string',
                         format: 'password',
-                        example: 'secret123'
+                        example: '123456789'
                     ),
                 ]
             )
